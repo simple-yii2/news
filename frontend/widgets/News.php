@@ -62,7 +62,7 @@ class News extends ListView
 
 	protected function renderItemDate($model)
 	{
-		return $model->date;
+		return Html::tag('div', $model->date);
 	}
 
 	protected function renderItemTitle($model)
@@ -84,7 +84,7 @@ class News extends ListView
 
 		if ($this->encodeText)
 			$text = Html::encode($text);
-		
+
 		return $text;
 	}
 

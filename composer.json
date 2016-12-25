@@ -11,7 +11,10 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "*"
+        "yiisoft/yii2": "*",
+        "simple-yii2/storage": "*",
+        "dkhlystov/yii2-translit": "*",
+        "asofter/yii2-imperavi-redactor": "*"
     },
     "autoload": {
         "psr-4": {
