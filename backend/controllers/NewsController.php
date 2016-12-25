@@ -4,6 +4,7 @@ namespace cms\news\backend\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 
@@ -27,6 +28,18 @@ class NewsController extends Controller
 				],
 			],
 		];
+	}
+
+	/**
+	 * @inheritdoc
+	 * Disable csrf validation for image uploading
+	 */
+	public function beforeAction($action)
+	{
+		if ($action->id == 'image')
+			$this->enableCsrfValidation = false;
+
+		return parent::beforeAction($action);
 	}
 
 	/**
@@ -96,10 +109,34 @@ class NewsController extends Controller
 			throw new BadRequestHttpException(Yii::t('news', 'Item not found.'));
 
 		if ($object->delete()) {
+			Yii::$app->storage->removeObject($object);
+
 			Yii::$app->session->setFlash('success', Yii::t('news', 'Item deleted successfully.'));
 		}
 
 		return $this->redirect(['index']);
+	}
+
+	/**
+	 * Image upload
+	 * @return string
+	 */
+	public function actionImage()
+	{
+		$name = Yii::$app->storage->prepare('file', [
+			'image/png',
+			'image/jpg',
+			'image/gif',
+			'image/jpeg',
+			'image/pjpeg',
+		]);
+
+		if ($name === false)
+			throw new BadRequestHttpException(Yii::t('news', 'Error occurred while image uploading.'));
+
+		return Json::encode([
+			['filelink' => $name],
+		]);
 	}
 
 }

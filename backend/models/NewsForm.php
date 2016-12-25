@@ -29,14 +29,14 @@ class NewsForm extends Model
 	public $title;
 
 	/**
-	 * @var string Text
+	 * @var string Preview
 	 */
-	public $text;
+	public $preview;
 
 	/**
-	 * @var string Url
+	 * @var string Text
 	 */
-	public $url;
+	public $content;
 
 	/**
 	 * @var cms\news\common\models\News
@@ -55,8 +55,11 @@ class NewsForm extends Model
 		$this->active = $object->active == 0 ? '0' : '1';
 		$this->date = $object->date;
 		$this->title = $object->title;
-		$this->text = $object->text;
-		$this->url = $object->url;
+		$this->preview = $object->preview;
+		$this->content = $object->content;
+
+		//file caching
+		Yii::$app->storage->cacheObject($object);
 
 		parent::__construct($config);
 	}
@@ -70,8 +73,8 @@ class NewsForm extends Model
 			'active' => Yii::t('news', 'Active'),
 			'date' => Yii::t('news', 'Date'),
 			'title' => Yii::t('news', 'Title'),
-			'text' => Yii::t('news', 'Text'),
-			'url' => Yii::t('news', 'Url'),
+			'preview' => Yii::t('news', 'Preview'),
+			'content' => Yii::t('news', 'Content'),
 		];
 	}
 
@@ -84,8 +87,8 @@ class NewsForm extends Model
 			['active', 'boolean'],
 			['date', 'match', 'pattern' => '/\d{4}\-\d{2}\-\d{2}\s\d{2}:\d{2}:\d{2}/'],
 			['title', 'string', 'max' => 100],
-			['text', 'string'],
-			['url', 'string', 'max' => 200],
+			['preview', 'string', 'max' => 1000],
+			['content', 'string'],
 			[['date', 'title'], 'required'],
 		];
 	}
@@ -100,15 +103,23 @@ class NewsForm extends Model
 			return false;
 
 		$object = $this->_object;
+		$isNewRecord = $object->getIsNewRecord();
 
 		$object->active = $this->active == 1;
 		$object->date = $this->date;
 		$object->title = $this->title;
-		$object->text = $this->text;
-		$object->url = empty($this->url) ? null : $this->url;
+		$object->preview = $this->preview;
+		$object->content = $this->content;
+
+		Yii::$app->storage->storeObject($object);
 
 		if (!$object->save(false))
 			return false;
+
+		if ($isNewRecord) {
+			$object->makeAlias();
+			$object->update(false, ['alias']);
+		}
 
 		return true;
 	}

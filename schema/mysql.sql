@@ -6,8 +6,7 @@ create table if not exists `News`
 	`date` datetime default null,
 	`title` varchar(100) default null,
 	`preview` text,
-	`text` text,
-	`url` varchar(200) default null,
+	`content` text,
 	primary key (`id`),
 	key `alias` (`alias`),
 	key `date` (`active`,`date`)
