@@ -83,7 +83,7 @@ class NewsForm extends Model
 	{
 		return [
 			['active', 'boolean'],
-			['date', 'match', 'pattern' => '/\d{4}\-\d{2}\-\d{2}\s\d{2}:\d{2}:\d{2}/'],
+			['date', 'match', 'pattern' => '/^\d{4}\-\d{2}\-\d{2}\s\d{2}:\d{2}:\d{2}$/'],
 			['title', 'string', 'max' => 100],
 			['preview', 'string', 'max' => 1000],
 			['content', 'string'],
