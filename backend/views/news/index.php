@@ -27,6 +27,17 @@ $this->params['breadcrumbs'] = [
 		return !$model->active ? ['class' => 'warning'] : [];
 	},
 	'columns' => [
+		[
+			'attribute' => 'date',
+			'format' => 'html',
+			'value' => function ($model, $key, $index, $column) {
+				$d = strtotime($model->date);
+				$date = Yii::$app->formatter->asDate($d, 'short');
+				$time = Yii::$app->formatter->asTime($d, 'short');
+
+				return $date . ' ' . Html::tag('span', $time, ['class'=>'text-muted']);
+			},
+		],
 		'title',
 		[
 			'class' => 'yii\grid\ActionColumn',
