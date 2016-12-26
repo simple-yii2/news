@@ -2,7 +2,6 @@
 
 return [
 	'News' => 'Новости',
-	'Create' => 'Добавить',
 	'Create news' => 'Добавить новость',
 
 	'Changes saved successfully.' => 'Изменения успешно сохранены.',
@@ -16,6 +15,8 @@ return [
 	'Preview' => 'Анонс',
 	'Content' => 'Текст',
 
+	'Create' => 'Добавить',
 	'Save' => 'Сохранить',
 	'Cancel' => 'Отмена',
+	'Continue reading' => 'Читать дальше',
 ];
