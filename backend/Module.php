@@ -4,9 +4,6 @@ namespace cms\news\backend;
 
 use Yii;
 
-/**
- * Blocks backend module
- */
 class Module extends \yii\base\Module {
 
 	/**
