@@ -44,7 +44,7 @@ class NewsController extends Controller
 
 	/**
 	 * List
-	 * @return void
+	 * @return string
 	 */
 	public function actionIndex()
 	{
@@ -58,7 +58,7 @@ class NewsController extends Controller
 
 	/**
 	 * Creating
-	 * @return void
+	 * @return string
 	 */
 	public function actionCreate()
 	{
@@ -77,7 +77,7 @@ class NewsController extends Controller
 	/**
 	 * Updating
 	 * @param integer $id
-	 * @return void
+	 * @return string
 	 */
 	public function actionUpdate($id)
 	{
@@ -100,7 +100,7 @@ class NewsController extends Controller
 	/**
 	 * Deleting
 	 * @param integer $id
-	 * @return void
+	 * @return string
 	 */
 	public function actionDelete($id)
 	{
