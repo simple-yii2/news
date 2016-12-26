@@ -5,8 +5,6 @@ namespace cms\news\backend\models;
 use Yii;
 use yii\base\Model;
 
-use cms\news\common\models\News;
-
 /**
  * Editing form
  */
