@@ -2,6 +2,7 @@
 
 namespace cms\news\frontend\widgets;
 
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\widgets\ListView;
@@ -9,15 +10,30 @@ use yii\widgets\ListView;
 class News extends ListView
 {
 
+	/**
+	 * @inheritdoc
+	 */
 	public $layout = "{items}\n{pager}";
 
-	public $itemTemplate = "{date}{title}{text}";
+	/**
+	 * @var string template of item
+	 */
+	public $itemTemplate = "{title}{date}{preview}";
 
-	public $encodeTitle = true;
-
-	public $encodeText = true;
-
+	/**
+	 * @var array title container options
+	 */
 	public $itemTitleOptions = ['class' => 'h4'];
+
+	/**
+	 * @var array date container options
+	 */
+	public $itemDateOptions = ['class' => 'news-date'];
+
+	/**
+	 * @var string route to news module
+	 */
+	protected static $route;
 
 	/**
 	 * @inheritdoc
@@ -56,36 +72,81 @@ class News extends ListView
 		return strtr($this->itemTemplate, [
 			'{date}' => $this->renderItemDate($model),
 			'{title}' => $this->renderItemTitle($model),
-			'{text}' => $this->renderItemText($model),
+			'{preview}' => $this->renderItemPreview($model),
 		]);
 	}
 
-	protected function renderItemDate($model)
+	/**
+	 * Render date of item
+	 * @param cms\news\common\models\News $model 
+	 * @return string
+	 */
+	protected function renderItemDate(\cms\news\common\models\News $model)
 	{
-		return Html::tag('div', $model->date);
+		$date = strtotime($model->date);
+
+		return Html::tag('p', Yii::$app->formatter->asDate($date, 'long'), $this->itemDateOptions);
 	}
 
-	protected function renderItemTitle($model)
+	/**
+	 * Render item title
+	 * @param cms\news\common\models\News $model 
+	 * @return string
+	 */
+	protected function renderItemTitle(\cms\news\common\models\News $model)
 	{
-		$title = $model->title;
+		$title = Html::a(Html::encode($model->title), $this->getItemUrl($model));
 
-		if ($this->encodeTitle)
-			$title = Html::encode($title);
-
-		if (!empty($model->url))
-			$title = Html::a($title, $model->url);
-
-		return Html::tag('span', $title, $this->itemTitleOptions);
+		return Html::tag('div', $title, $this->itemTitleOptions);
 	}
 
-	protected function renderItemText($model)
+	/**
+	 * Render preview text of item
+	 * @param cms\news\common\models\News $model 
+	 * @return string
+	 */
+	protected function renderItemPreview(\cms\news\common\models\News $model)
 	{
-		$text = $model->text;
+		return Html::encode($model->preview);
+	}
 
-		if ($this->encodeText)
-			$text = Html::encode($text);
+	/**
+	 * Return url to news item page
+	 * @param cms\news\common\models\News $model 
+	 * @return array
+	 */
+	protected function getItemUrl(\cms\news\common\models\News $model)
+	{
+		if (static::$route === null)
+			$this->prepareRoute();
 
-		return $text;
+		return [static::$route, 'alias' => $model->alias];
+	}
+
+	/**
+	 * Determine news frontend route using application modules 
+	 * @return void
+	 */
+	protected function prepareRoute()
+	{
+		$route = '';
+
+		foreach (Yii::$app->modules as $name => $module) {
+			if ($module instanceof \yii\base\Module) {
+				$class = $module::className();
+			} elseif (is_array($module)) {
+				$class = $module['class'];
+			} else {
+				$class = (string) $module;
+			}
+
+			if ($class === 'cms\news\frontend\Module') {
+				$route = '/' . $name . '/news/view';
+				break;
+			}
+		}
+
+		static::$route = $route;
 	}
 
 }
