@@ -13,22 +13,9 @@ class News extends ListView
 	/**
 	 * @inheritdoc
 	 */
-	public $layout = "{items}\n{pager}";
+	public $layout = "{items}";
 
-	/**
-	 * @var string template of item
-	 */
-	public $itemTemplate = "{title}{date}{preview}";
-
-	/**
-	 * @var array title container options
-	 */
-	public $itemTitleOptions = ['class' => 'h4'];
-
-	/**
-	 * @var array date container options
-	 */
-	public $itemDateOptions = ['class' => 'news-date'];
+	public $maxCount = 5;
 
 	/**
 	 * @var string route to news module
@@ -44,6 +31,9 @@ class News extends ListView
 			$this->prepareDataProvider();
 
 		parent::init();
+
+		if ($this->dataProvider->pagination)
+			$this->dataProvider->pagination->pageSize = $this->maxCount;
 	}
 
 	/**
@@ -69,45 +59,16 @@ class News extends ListView
 		if ($this->itemView !== null)
 			return parent::renderItem($model, $key, $index);
 
-		return strtr($this->itemTemplate, [
-			'{date}' => $this->renderItemDate($model),
-			'{title}' => $this->renderItemTitle($model),
-			'{preview}' => $this->renderItemPreview($model),
-		]);
-	}
+		$d = strtotime($model->date);
+		$date = Html::tag('strong', Yii::$app->formatter->asDate($d, 'short'));
 
-	/**
-	 * Render date of item
-	 * @param cms\news\common\models\News $model 
-	 * @return string
-	 */
-	protected function renderItemDate(\cms\news\common\models\News $model)
-	{
-		$date = strtotime($model->date);
-
-		return Html::tag('p', Yii::$app->formatter->asDate($date, 'long'), $this->itemDateOptions);
-	}
-
-	/**
-	 * Render item title
-	 * @param cms\news\common\models\News $model 
-	 * @return string
-	 */
-	protected function renderItemTitle(\cms\news\common\models\News $model)
-	{
 		$title = Html::a(Html::encode($model->title), $this->getItemUrl($model));
 
-		return Html::tag('div', $title, $this->itemTitleOptions);
-	}
+		$header = Html::tag('div', $date . ' ' . $title);
 
-	/**
-	 * Render preview text of item
-	 * @param cms\news\common\models\News $model 
-	 * @return string
-	 */
-	protected function renderItemPreview(\cms\news\common\models\News $model)
-	{
-		return Html::encode($model->preview);
+		$preview = Html::tag('p', Html::encode($model->preview));
+
+		return $header . $preview;
 	}
 
 	/**
