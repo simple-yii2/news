@@ -12,6 +12,7 @@ $this->title = $title . ' | ' . Yii::$app->name;
 
 <?= ListView::widget([
 	'dataProvider' => $dataProvider,
+	'layout' => "{items}\n{pager}",
 	'itemView' => 'item',
 	'options' => ['class' => 'news-list'],
 ]) ?>
