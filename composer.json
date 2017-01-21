@@ -14,6 +14,7 @@
         "yiisoft/yii2": "*",
         "dkhlystov/yii2-storage": "*",
         "dkhlystov/yii2-translit": "*",
+        "dkhlystov/yii2-datepicker": "*",
         "asofter/yii2-imperavi-redactor": "*"
     },
     "autoload": {

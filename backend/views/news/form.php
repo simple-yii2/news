@@ -20,13 +20,15 @@ if (isset(Yii::$app->storage) && (Yii::$app->storage instanceof dkhlystov\storag
 
 	<?= $form->field($model, 'active')->checkbox() ?>
 
-	<?= $form->field($model, 'date') ?>
+	<?= $form->field($model, 'date')->widget('dkhlystov\widgets\Datepicker') ?>
+
+	<?= $form->field($model, 'time') ?>
 
 	<?= $form->field($model, 'title') ?>
 
 	<?= $form->field($model, 'preview')->textarea(['rows' => 5]) ?>
 
-	<?= $form->field($model, 'content')->widget(\yii\imperavi\Widget::className(), [
+	<?= $form->field($model, 'content')->widget('yii\imperavi\Widget', [
 		'options' => $options,
 		'plugins' => [
 			'fullscreen',

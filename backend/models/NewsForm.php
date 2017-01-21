@@ -4,6 +4,7 @@ namespace cms\news\backend\models;
 
 use Yii;
 use yii\base\Model;
+use yii\helpers\ArrayHelper;
 
 /**
  * Editing form
@@ -20,6 +21,11 @@ class NewsForm extends Model
 	 * @var datetime Date
 	 */
 	public $date;
+
+	/**
+	 * @var datetime Time
+	 */
+	public $time;
 
 	/**
 	 * @var string Title
@@ -51,7 +57,9 @@ class NewsForm extends Model
 
 		//attributes
 		$this->active = $object->active == 0 ? '0' : '1';
-		$this->date = $object->date;
+		$a = explode(' ', $object->date);
+		$this->date = ArrayHelper::getValue($a, 0, '');
+		$this->time = ArrayHelper::getValue($a, 1, '');
 		$this->title = $object->title;
 		$this->preview = $object->preview;
 		$this->content = $object->content;
@@ -70,6 +78,7 @@ class NewsForm extends Model
 		return [
 			'active' => Yii::t('news', 'Active'),
 			'date' => Yii::t('news', 'Date'),
+			'time' => Yii::t('news', 'Time'),
 			'title' => Yii::t('news', 'Title'),
 			'preview' => Yii::t('news', 'Preview'),
 			'content' => Yii::t('news', 'Content'),
@@ -83,7 +92,8 @@ class NewsForm extends Model
 	{
 		return [
 			['active', 'boolean'],
-			['date', 'match', 'pattern' => '/^\d{4}\-\d{2}\-\d{2}\s\d{2}:\d{2}:\d{2}$/'],
+			['date', 'match', 'pattern' => '/^\d{4}\-\d{2}\-\d{2}$/'],
+			['time', 'match', 'pattern' => '/^\d{2}:\d{2}:\d{2}$/'],
 			['title', 'string', 'max' => 100],
 			['preview', 'string', 'max' => 1000],
 			['content', 'string'],
@@ -104,7 +114,7 @@ class NewsForm extends Model
 		$isNewRecord = $object->getIsNewRecord();
 
 		$object->active = $this->active == 1;
-		$object->date = $this->date;
+		$object->date = $this->date . ' ' . $this->time;
 		$object->title = $this->title;
 		$object->preview = $this->preview;
 		$object->content = $this->content;
