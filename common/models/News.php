@@ -3,6 +3,7 @@
 namespace cms\news\common\models;
 
 use yii\db\ActiveRecord;
+use yii\helpers\Url;
 
 use helpers\Translit;
 use dkhlystov\storage\components\StoredInterface;
@@ -25,8 +26,27 @@ class News extends ActiveRecord implements StoredInterface
 	{
 		parent::init();
 
-		$this->active = true;
-		$this->date = date('Y-m-d H:i:s');
+		if ($this->active === null)
+			$this->active = true;
+		
+		if ($this->date === null)
+			$this->date = date('Y-m-d H:i:s');
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function behaviors()
+	{
+		return [
+			'sitemap' => [
+				'class' => 'cms\sitemap\common\behaviors\SitemapBehavior',
+				'loc' => function($model) {
+					return Url::toRoute(['/news/news/view', 'alias' => $model->alias]);
+				},
+				'active' => 'active',
+			],
+		];
 	}
 
 	/**
